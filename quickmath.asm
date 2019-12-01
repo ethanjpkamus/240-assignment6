@@ -1,3 +1,7 @@
+; The purpose of this assignment is to practice the use of floating point numbers
+; in intel x86_64 assemnly language
+
+
 global quickmath
 
 extern printf
@@ -63,21 +67,26 @@ quickmath:
 	call	scanf
 
 	cdqe
-	pop	r15	;stores the number of partial sums
+	pop	r15			      ;stores the number of partial sums
 
-;===== print out the current clock time =====
+;===== print out the current clock time ========================================
 
 	rdtsc
 	shl	rdx, 32
 	or	rdx, rax
-	mov	r13, rdx ;r13 stores the current clock time
+	mov	r14, rdx 		      ;r14 stores the current clock time
 
-;===== prepare the registers for loop =====
+	mov qword rax, 0
+	mov	rdi, clockprompt 	      ;The clock is now ___ tics...
+	mov	rsi, r14
+	call	printf
 
-	cvtis2sd xmm12, r15 ;xmm12 stores condition for loop
+;===== prepare the registers for loop ==========================================
 
-	movsd	xmm15, 0x3FF0000000000000  ;counter for sigma loop (start at 1.0)
-	movsd	xmm14, 0x3FF0000000000000   ;1.0 (numerator)
+	cvtis2sd xmm12, r15 		      ;cast r15 register to xmm12 stores condition for loop
+
+	movsd	xmm15, 0x3FF0000000000000  ;counter for sigma loop (starts at 1.0)
+	movsd	xmm14, 0x3FF0000000000000  ;1.0 (numerator)
 	movsd	xmm13, 0x0000000000000000  ;store the sum
 
 ;===== beginning of summation loop =============================================
@@ -86,17 +95,17 @@ sigma:
 	divsd xmm14, xmm15	;ratio = 1/n
 	addsd xmm13, xmm14	;sum += ratio
 
-	;check if multiple of 4
+
 	movsd	xmm11, xmm15
 	divsd	xmm11, 0x4010000000000000  ;divide by 4.0
-	ucomisd xmm11, 0x0000000000000000 ;check if equal to zero
+	ucomisd xmm11, 0x0000000000000000 ;check if multiple of zero
 	je	partialsum
 
 sigma2:
-	addsd xmm15, 0x3FF0000000000000 ;increment n
+	addsd xmm15, 0x3FF0000000000000   ;increment n by 1.0
 
 	ucomisd xmm15, xmm12
-	jbe	sigma ;loop if counter is <= xmm12
+	jbe	sigma                      ;loop to sigma if counter is <= xmm12
 	jmp	finish
 
 ;===== print out partial sum ===================================================
@@ -104,24 +113,41 @@ partialsum:
 
 	push qword 0
 	mov	rax, 2
-	mov	rdi, partialsumprompt
+	mov	rdi, partialsumprompt      ;With ___ terms, the sum is ___
 	movsd	xmm0, xmm15
 	movsd	xmm1, xmm13
 	call	printf
-	pop	rax
 
+	pop	rax
 	jmp	sigma2
 
+;===== print final sum =========================================================
 
-;===== final steps =============================================================
 finish:
 
 	push qword 0
 	mov	rax, 1
-	mov	rdi, finalsum
+	mov	rdi, finalsum		      ;The Final Sum is ___
 	movsd	xmm0, xmm13
 	call	printf
 	pop rax
+
+;===== print the second clock time =============================================
+
+	rdtsc
+	shl	rdx, 32
+	or	rdx, rax
+	mov	r13, rdx 		      ;r14 stores the current clock time
+
+	mov qword rax, 0
+	mov	rdi, clockfinal	      ;The clock is now...
+	mov	rsi, r13
+	call	printf
+
+;===== calculate the time in seconds ===========================================
+
+	
+;===== return the sum to the driver module =====================================
 
 	pop	r15
 	pop	r14

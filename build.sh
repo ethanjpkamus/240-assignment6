@@ -1,6 +1,9 @@
 #Name: Ethan Kamus
 #email: ethanjpkamus@csu.fullerton.edu
 
+# The purpose of this assignment is to practice the use of floating point numbers
+# in intel x86_64 assemnly language
+
 rm *.o
 rm *.out
 rm *.lis

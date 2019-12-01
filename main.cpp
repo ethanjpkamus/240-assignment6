@@ -2,7 +2,8 @@
 //Email: ethanjpkamus@csu.fullerton.edu
 
 /*
- * The purpose of this assignment is
+ * The purpose of this assignment is to practice the use of floating point numbers
+ * in intel x86_64 assemnly language
  */
 
 #include <stdio.h>
