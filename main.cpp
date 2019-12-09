@@ -13,8 +13,8 @@ extern "C" float quickmath();
 
 int main(){
 	float pass;
-	std::cout << "\nThis program was made by Ethan Kamus\n
-			  Here we will find the sum of n terms of the harmonic series.";
+	std::cout << "\nThis program was made by Ethan Kamus\n"
+		   << "Here we will find the sum of n terms of the harmonic series.";
 
  	pass = quickmath();
 
