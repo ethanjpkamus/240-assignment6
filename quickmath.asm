@@ -83,7 +83,7 @@ quickmath:
 
 ;===== prepare the registers for loop ==========================================
 
-	cvtis2sd xmm12, r15 		      ;cast r15 register to xmm12 stores condition for loop
+	cvtsi2sd xmm12, r15 		      ;cast r15 register to xmm12 stores condition for loop
 
 	movsd	xmm15, 0x3FF0000000000000  ;counter for sigma loop (starts at 1.0)
 	movsd	xmm14, 0x3FF0000000000000  ;1.0 (numerator)
