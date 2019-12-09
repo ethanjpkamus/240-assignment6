@@ -148,20 +148,22 @@ finish:
 
 ;===== calculate the time in seconds ===========================================
 
-	sub	r13, r14		       ;find the runtime in milliseconds
-
-	cvtis2sd xmm9, r13;convert r13 into a float
+;	sub	r13, r14		       ;r13 stores runtime in tics
 
 	;do math to calculate time in seconds on a 2.7 ghz processor
+;	mov	rax, 27000000000
+;	cqo
+;	idiv	r13
+;	mov	r13, rax
 
 
 ;===== print the runtime to show the user ======================================
 
-	mov qword rax, 0
-	mov	rdi, elapsed	      	       ;The elapsed time...
-	mov	rsi, r13
-	mov	xmm0, xmm9			;!! change to the calculated value printed in block above !!
-	call	printf
+;	mov qword rax, 0
+;	mov	rdi, elapsed	      	       ;The elapsed time...
+;	mov	rsi, r13
+;	mov	xmm0, xmm9			;!! change to the calculated value printed in block above !!
+;	call	printf
 
 ;===== return the sum to the driver module =====================================
 
