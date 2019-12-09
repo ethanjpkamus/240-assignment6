@@ -15,7 +15,7 @@ segment .data
 	partialsumprompt db "With %lf terms, the sum is %lf",10,0
 	finalsum db "The Final Sum is %lf",10,0
 	clockfinal db "The clock is now %ld and the computation is complete.",10,0
-	elapsed db "The elapsed time was %ld tics.at 2.7 GHz that is %lf seconds",10,0
+	elapsed db "The elapsed time was %ld tics. At 2.7 GHz that is %lf seconds",10,0
 	finalprompt db "This program will now return the harmonic sum to the driver program",10,0
 
 	stringformat db "%s"
@@ -51,7 +51,7 @@ quickmath:
 	mov	rsi, welcome
 	call	printf
 
-;===== prompt the user to input a number =====================================
+;===== prompt the user to input a number =======================================
 
 	mov qword rax, 0
 	mov	rdi, stringformat
@@ -88,6 +88,7 @@ quickmath:
 	movsd	xmm15, 0x3FF0000000000000  ;counter for sigma loop (starts at 1.0)
 	movsd	xmm14, 0x3FF0000000000000  ;1.0 (numerator)
 	movsd	xmm13, 0x0000000000000000  ;store the sum
+	movsd	xmm10, 0x3FF0000000000000  ;store 1.0 for counter
 
 ;===== beginning of summation loop =============================================
 sigma:
@@ -102,7 +103,8 @@ sigma:
 	je	partialsum
 
 sigma2:
-	addsd xmm15, 0x3FF0000000000000   ;increment n by 1.0
+	movsd xmm14, 0x3FF0000000000000   ;reset numerator for next loop
+	addsd xmm15, xmm10   ;increment n by 1.0
 
 	ucomisd xmm15, xmm12
 	jbe	sigma                      ;loop to sigma if counter is <= xmm12
@@ -146,8 +148,24 @@ finish:
 
 ;===== calculate the time in seconds ===========================================
 
-	
+	sub	r13, r14		       ;find the runtime in milliseconds
+
+	cvtis2sd xmm9, r13;convert r13 into a float
+
+	;do math to calculate time in seconds on a 2.7 ghz processor
+
+
+;===== print the runtime to show the user ======================================
+
+	mov qword rax, 0
+	mov	rdi, elapsed	      	       ;The elapsed time...
+	mov	rsi, r13
+	mov	xmm0, xmm9			;!! change to the calculated value printed in block above !!
+	call	printf
+
 ;===== return the sum to the driver module =====================================
+
+	mov	rax, xmm13
 
 	pop	r15
 	pop	r14
